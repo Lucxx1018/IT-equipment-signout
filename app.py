@@ -9,6 +9,7 @@ import datetime
 
 
 class NameForm(FlaskForm):
+    name = StringField("Put your name here:", validators=[DataRequired()])
     submit = SubmitField("Click here when all fields are filled in.")
 
 
