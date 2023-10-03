@@ -1,4 +1,5 @@
-from flask import Flask, render_template, g
+import base64
+from flask import Flask, render_template, g, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField, SelectField
 from wtforms.validators import DataRequired
@@ -39,6 +40,17 @@ def close_db(*args):
 with open("schema.sql") as file, app.app_context():
     get_db().executescript(file.read())
 
+@app.route("/process", methods=["POST"])
+def process():
+    # TODO: Handle
+    assert request.json is not None
+
+    response_encoded: str = request.json["dataUri"].split(",")[1]
+    response = base64.b64decode(response_encoded)
+    with open("response.svg", "wb") as file:
+        file.write(response)
+
+    return ""
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -52,3 +64,8 @@ def index():
             (form.name.data, date, time, form.equipment.data, NotImplemented),
         )
     return render_template("index.jinja", form=form)
+
+@app.route("/main.js", methods=["GET"])
+def js_serve():
+    with open("templates/main.js") as file:
+        return file.read()

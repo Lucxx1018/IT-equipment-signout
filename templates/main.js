@@ -1,21 +1,23 @@
-let signatureButton = document.getElementById("signatureButton")
-document.getElementById("signatureCanvas");
-const signaturePad = new SignaturePad(canvas);
-signatureButton.addEventListner('click', () => {
-    let dataUri = signaturePad.toDataURL(...);
-    fetch('/process', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+document.addEventListener("DOMContentLoaded", () => {
+    let signatureButton = document.getElementById("signatureButton")
+    let signatureCanvas = document.getElementById("signatureCanvas");
+    const signaturePad = new SignaturePad(signatureCanvas);
 
-        },
-        body: JSON.stringify({ dataUri })
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-});
+    signatureButton.addEventListener('click', async () => {
+        let dataUri = signaturePad.toDataURL("image/svg+xml");
+
+        try {
+            response = await fetch('/process', {
+                method: 'POST',
+                body: JSON.stringify({ dataUri }),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            console.log(await response.json())
+        } catch (err) {
+            console.log("Error: ", err)
+        }
+    });
+})
