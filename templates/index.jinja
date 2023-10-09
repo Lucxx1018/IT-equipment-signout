@@ -12,12 +12,21 @@
 
 <body>
     <form method="POST">
-        {{ form.name.label }} {{ form.name() }}
-        {{ form.equipment.label }} {{ form.equipment() }}
-        {{ form.submit() }}
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="equipment-select">Choose a pet:</label>
+        <select name="equipment" id="equipment-select">
+            <option value="">--Please choose an option--</option>
+            <option value="chromebook">Chromebook</option>
+            <option value="headphones">Headphones</option>
+            <option value="guitar-acoustic">Acoustic guitar</option>
+            <option value="guitar-electric">Electric guitar</option>
+            <option value="asdfasdf">asdfasdf</option>
+            <option value="test">test</option>
+        </select><br><br>
+        <canvas id="signatureCanvas" width="400" height="200"></canvas>
+        <button id="signatureButton">Save signature</button>
     </form>
-    <canvas id="signatureCanvas" width="400" height="200"></canvas>
-    <button id="signatureButton">Save signature</button>
 </body>
 
 </html>

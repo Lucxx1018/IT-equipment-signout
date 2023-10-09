@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let dataUri = signaturePad.toDataURL("image/svg+xml");
 
         try {
-            response = await fetch('/process', {
+            response = await fetch('/', {
                 method: 'POST',
                 body: JSON.stringify({ dataUri }),
                 headers: {
