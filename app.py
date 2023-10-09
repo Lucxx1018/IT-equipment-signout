@@ -41,7 +41,7 @@ def index():
         time = datetime.datetime.now().strftime("%H:%M:%S")
         cursor.execute(
             "INSERT INTO equipment_log() VALUES($1, $2, $3, $4, $5) ",
-            (NotImplemented, date, time, NotImplemented, NotImplemented),
+            (NotImplemented, date, time, NotImplemented, response),
         )
     return render_template("index.jinja")
 

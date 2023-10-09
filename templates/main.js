@@ -3,7 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let signatureCanvas = document.getElementById("signatureCanvas");
     const signaturePad = new SignaturePad(signatureCanvas);
 
-    signatureButton.addEventListener('click', async () => {
+    signatureButton.addEventListener('click', async (event) => {
+        preventDefault(event);
         let dataUri = signaturePad.toDataURL("image/svg+xml");
 
         try {
