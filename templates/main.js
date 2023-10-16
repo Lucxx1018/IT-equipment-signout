@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let signatureButton = document.getElementById("signatureButton")
     let signatureCanvas = document.getElementById("signatureCanvas");
     const signaturePad = new SignaturePad(signatureCanvas);
+    signaturePad.clear();
 
     signatureButton.addEventListener('click', async (event) => {
         preventDefault(event);

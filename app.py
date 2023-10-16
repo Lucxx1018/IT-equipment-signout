@@ -1,7 +1,8 @@
 import base64
-from flask import Flask, render_template, g, request
+from flask import Flask, render_template, g, request, redirect
 import sqlite3
 import datetime
+import time
 
 
 app = Flask(__name__)
@@ -18,7 +19,6 @@ def get_db():
 
 @app.teardown_appcontext
 def close_db(_exception):
-    # TODO: Figure out what black magic makes this error if it isn't given *args
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
@@ -30,19 +30,23 @@ with open("schema.sql") as file, app.app_context():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    #    if request.json is not None:
-    # response_encoded: str = request.json["dataUri"].split(",")[1]
-    # response = base64.b64decode(response_encoded)
-    # if True:  # TODO: Check if signature already exists before making it again
-    #     with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
-    #         file.write(response)
-    # cursor = get_db().cursor()
-    # date = datetime.date.today().strftime("%Y-%M-%D")
-    # time = datetime.datetime.now().strftime("%H:%M:%S")
-    # cursor.execute(
-    #     "INSERT INTO equipment_log() VALUES($1, $2, $3, $4, $5) ",
-    #     (NotImplemented, date, time, NotImplemented, response),
-    # )
+    if request.method == "POST":
+        print(request.values)
+        # response_encoded: str = request.json["dataUri"].split(",")[1]
+        # response = base64.b64decode(response_encoded)
+        # if True:  # TODO: Check if signature already exists before making it again
+        #     with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
+        #         file.write(response)
+        cursor = get_db().cursor()
+        name = request.form["name"]
+        date = datetime.date.today().strftime("%Y-%M-%D")
+        time = datetime.datetime.now().strftime("%H:%M:%S")
+        equipment = request.form["equipment"]
+        # cursor.execute(
+        #    "INSERT INTO equipment_log() VALUES($1, $2, $3, $4, $5) ",
+        #    (name, date, time, equipment, NotImplemented),
+        # )
+        return redirect("/success", code=302)
     return render_template("index.jinja")
 
 
@@ -52,6 +56,6 @@ def js_serve():
         return file.read()
 
 
-@app.route("/success", methods=["POST"])
+@app.route("/success", methods=["GET"])
 def success():
     return render_template("success.jinja")
