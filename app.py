@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, render_template, g, request, redirect
+from flask import Flask, render_template, g, request, redirect, url_for
 import sqlite3
 import datetime
 
@@ -39,7 +39,6 @@ def index():
             file.write(response)
         cursor = get_db().cursor()
         date = datetime.date.today().strftime("%Y-%m-%d")
-        print(date)
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
         equipment = request.json["equipment"]
         cursor.execute(
@@ -47,7 +46,7 @@ def index():
             (name, date, current_time, equipment, file_name),
         )
         get_db().commit()
-        return redirect("/success", code=302)
+        return redirect(url_for("success"))  # TODO: Fix broken redirect
     return render_template("index.jinja")
 
 
