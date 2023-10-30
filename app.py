@@ -2,7 +2,6 @@ import base64
 from flask import Flask, render_template, g, request, redirect
 import sqlite3
 import datetime
-import time
 
 
 app = Flask(__name__)
@@ -31,19 +30,23 @@ with open("schema.sql") as file, app.app_context():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        # response_encoded: str = request.json["dataUri"].split(",")[1]
-        # response = base64.b64decode(response_encoded)
-        # with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
-        #    file.write(response)
+        assert request.json is not None
+        response_encoded: str = request.json["signature"].split(",")[1]
+        response = base64.b64decode(response_encoded)
+        name = request.json["name"]
+        file_name = name.lower().replace(" ", "_") + ".svg"
+        with open(f"signatures/{file_name}", "wb") as file:
+            file.write(response)
         cursor = get_db().cursor()
-        # name = request.form["name"]
-        date = datetime.date.today().strftime("%Y-%M-%D")
+        date = datetime.date.today().strftime("%Y-%m-%d")
+        print(date)
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
-        # equipment = request.form["equipment"]
-        # cursor.execute(
-        #    "INSERT INTO equipment_log() VALUES($1, $2, $3, $4, $5) ",
-        #    (name, date, time, equipment, NotImplemented),
-        # )
+        equipment = request.json["equipment"]
+        cursor.execute(
+            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5) ",
+            (name, date, current_time, equipment, file_name),
+        )
+        get_db().commit()
         return redirect("/success", code=302)
     return render_template("index.jinja")
 

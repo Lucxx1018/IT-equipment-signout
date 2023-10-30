@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS equipment_log(
     name TEXT,
-    date DATE PRIMARY KEY,
+    date DATE,
     time TIME,
     equipment TEXT,
     signature TEXT
