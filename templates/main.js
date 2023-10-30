@@ -9,10 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     signatureButton.addEventListener('click', async (event) => {
         let dataUri = signaturePad.toDataURL("image/svg+xml");
         let signatureData = JSON.stringify(dataUri);
-        let name = formName.value;
-        let equipment = formEquipment.value;
-        let formData = JSON.stringify([name, equipment]);
-        let payload = JSON.stringify([formData, signatureData]);
+        let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value, signature: signatureData });
         console.log(payload);
         try {
             response = await fetch('/', {

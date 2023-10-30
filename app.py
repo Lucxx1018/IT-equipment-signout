@@ -31,7 +31,6 @@ with open("schema.sql") as file, app.app_context():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        print(request.json)
         # response_encoded: str = request.json["dataUri"].split(",")[1]
         # response = base64.b64decode(response_encoded)
         # with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
