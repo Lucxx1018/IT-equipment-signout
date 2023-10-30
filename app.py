@@ -31,17 +31,16 @@ with open("schema.sql") as file, app.app_context():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        print(request.values)
+        print(request.json)
         # response_encoded: str = request.json["dataUri"].split(",")[1]
         # response = base64.b64decode(response_encoded)
-        # if True:  # TODO: Check if signature already exists before making it again
-        #     with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
-        #         file.write(response)
+        # with open("response.svg", "wb") as file:  # TODO: Make this auto-generate file names using users' names
+        #    file.write(response)
         cursor = get_db().cursor()
-        name = request.form["name"]
+        # name = request.form["name"]
         date = datetime.date.today().strftime("%Y-%M-%D")
-        time = datetime.datetime.now().strftime("%H:%M:%S")
-        equipment = request.form["equipment"]
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        # equipment = request.form["equipment"]
         # cursor.execute(
         #    "INSERT INTO equipment_log() VALUES($1, $2, $3, $4, $5) ",
         #    (name, date, time, equipment, NotImplemented),
