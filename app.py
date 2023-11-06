@@ -3,7 +3,6 @@ from flask import Flask, render_template, g, request, redirect, url_for
 from pathlib import Path
 import sqlite3
 import datetime
-import os
 
 
 app = Flask(__name__)
@@ -51,7 +50,7 @@ def index():
             (name, date, current_time, equipment, file_name),
         )
         get_db().commit()
-        return redirect("success", code=302)  # TODO: Fix broken redirect
+        return '{"redirect_to": "success"}'
     else:
         return render_template("index.jinja")
 

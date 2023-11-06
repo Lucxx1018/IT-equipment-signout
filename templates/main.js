@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let dataUri = signaturePad.toDataURL("image/svg+xml");
         let signatureData = JSON.stringify(dataUri);
         let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value, signature: signatureData });
-        console.log(payload);
         try {
             response = await fetch('/', {
                 method: 'POST',
@@ -20,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
             });
 
-            console.log(await response)
+            window.location = (await response.json()).redirect_to
         } catch (err) {
             console.log("Error: ", err)
         }
