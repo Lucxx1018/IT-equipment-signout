@@ -1,7 +1,9 @@
 import base64
 from flask import Flask, render_template, g, request, redirect, url_for
+from pathlib import Path
 import sqlite3
 import datetime
+import os
 
 
 app = Flask(__name__)
@@ -35,19 +37,23 @@ def index():
         response = base64.b64decode(response_encoded)
         name = request.json["name"]
         file_name = name.lower().replace(" ", "_") + ".svg"
+        if Path("signatures").exists() is not True:
+            Path("signatures").mkdir()
         with open(f"signatures/{file_name}", "wb") as file:
             file.write(response)
+
         cursor = get_db().cursor()
         date = datetime.date.today().strftime("%Y-%m-%d")
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
         equipment = request.json["equipment"]
         cursor.execute(
-            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5) ",
+            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5)",
             (name, date, current_time, equipment, file_name),
         )
         get_db().commit()
-        return redirect(url_for("success"))  # TODO: Fix broken redirect
-    return render_template("index.jinja")
+        return redirect("success", code=302)  # TODO: Fix broken redirect
+    else:
+        return render_template("index.jinja")
 
 
 @app.route("/main.js", methods=["GET"])
@@ -56,6 +62,6 @@ def js_serve():
         return file.read()
 
 
-@app.route("/success", methods=["GET"])
+@app.route("/success", methods=["GET", "POST"])
 def success():
     return render_template("success.jinja")
