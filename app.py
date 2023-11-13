@@ -57,7 +57,7 @@ def index():
         return render_template("index.jinja")
 
 
-@app.route("/signin.jinja", methods=["GET", "POST"])
+@app.route("/signin", methods=["GET", "POST"])
 def signin():
     if request.method == "POST":
         # TODO: Find the entry of the sign out, add time of sign in
@@ -73,7 +73,7 @@ def js_serve():
 
 @app.route("/style.css", methods=["GET"])
 def css_serve():
-    with open("templates/style.css") as file:
+    with open("static/style.css") as file:
         return file.read()
 
 
