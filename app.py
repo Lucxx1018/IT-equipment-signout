@@ -60,9 +60,23 @@ def index():
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
     if request.method == "POST":
+        name = request.json["name"].lower().replace(" ", "_")
+        equipment = request.json["equipment"]
+        date = datetime.date.today().strftime("%Y-%m-%d")
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        cursor = get_db().cursor()
+        cursor.execute(
+            """
+            UPDATE equipment_log
+            SET TimeOut = $1
+            WHERE Name = $2 AND Date = $3 AND Equipment = $4""",
+            (current_time, name, date, equipment),
+        )
         # TODO: Find the entry of the sign out, add time of sign in
         return '{"redirect_to": "success"}'
-    return render_template("signin.jinja")
+        get_db().commit()
+    else:
+        return render_template("signin.jinja")
 
 
 @app.route("/main.js", methods=["GET"])

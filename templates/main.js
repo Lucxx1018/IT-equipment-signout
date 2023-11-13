@@ -1,15 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
     let formName = document.getElementById("name");
     let formEquipment = document.getElementById("equipment-select");
-    let signatureCanvas = document.getElementById("signatureCanvas");
+    let signinFlag = false;
+    try {
+        let signatureCanvas = document.getElementById("signatureCanvas");
+        const signaturePad = new SignaturePad(signatureCanvas);
+        console.log("The pad got defined");
+        signaturePad.clear();
+    }
+    catch (err) {
+        console.log("Error: ", err, " , which probably means this is the signin page so we'll continue anyways.");
+        let signinFlag = 1;
+    }
     let signatureButton = document.getElementById("signatureButton");
-    const signaturePad = new SignaturePad(signatureCanvas);
-    signaturePad.clear();
 
     signatureButton.addEventListener('click', async (event) => {
-        let dataUri = signaturePad.toDataURL("image/svg+xml");
-        let signatureData = JSON.stringify(dataUri);
-        let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value, signature: signatureData });
+        if (signinFlag == 1) {
+            let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value});
+        }
+        else {
+            console.log("DEBUG PRINT YIPPEEEE")
+            let dataUri = signaturePad.toDataURL("image/svg+xml");
+            let signatureData = JSON.stringify(dataUri);
+            let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value, signature: signatureData });
+        }
         try {
             response = await fetch('/', {
                 method: 'POST',
