@@ -1,12 +1,14 @@
 .flex {
     display: flex;
-    padding: 1em;
+    flex-direction: column;
 }
 
-.flex_column {
-    flex-direction: column;
+.flex_row {
+    flex-direction: row;
+    padding: 10px 0px 0px 0px;
 }
 
 canvas {
     border: 2px solid black;
 }
+

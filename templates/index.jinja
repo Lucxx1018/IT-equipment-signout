@@ -13,11 +13,11 @@
 
 <body>
     <div class="flex">
-        <div class="flex_column">
+        <div class="flex_row">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
         </div>
-        <div class="flex_column">
+        <div class="flex_row">
             <label for="equipment-select">Equipment to sign out:</label>
             <select name="equipment" id="equipment-select">
                 <option value="">--Please choose an option--</option>
@@ -29,14 +29,14 @@
                 <option value="test">test</option>
             </select>
         </div>
-        <div class="flex_column">
+        <div class="flex_row">
             <canvas id="signatureCanvas" class="canvas" width="auto" height="auto">
                 Oops! There's supposed to be a canvas here, refresh or something.
             </canvas>
         </div>
         <button id="signatureButton">Sign out</button>
-        <a href="/signin">Want to sign something back in?</a>
     </div>
+        <a href="/signin">Want to sign something back in?</a>
 </body>
 
 </html>
