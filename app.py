@@ -1,8 +1,9 @@
-import base64
-from flask import Flask, render_template, g, request, redirect, url_for
+from flask import Flask, render_template, g, request
+from typing import Optional
 from pathlib import Path
-import sqlite3
 import datetime
+import sqlite3
+import base64
 
 
 app = Flask(__name__)
@@ -18,7 +19,7 @@ def get_db():
 
 
 @app.teardown_appcontext
-def close_db(_exception):
+def close_db(_: Optional[BaseException]):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
@@ -35,7 +36,8 @@ def index():
         response_encoded: str = request.json["signature"].split(",")[1]
         response = base64.b64decode(response_encoded)
         name = request.json["name"]
-        file_name = name.lower().replace(" ", "_") + ".svg"
+        name = name.lower().replace(" ", "_")  # This makes John Doe -> john_doe
+        file_name = name + ".svg"
         if Path("signatures").exists() is not True:
             Path("signatures").mkdir()
         with open(f"signatures/{file_name}", "wb") as file:
@@ -46,13 +48,21 @@ def index():
         current_time = datetime.datetime.now().strftime("%H:%M:%S")
         equipment = request.json["equipment"]
         cursor.execute(
-            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5)",
-            (name, date, current_time, equipment, file_name),
+            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5, $6)",
+            (name, date, current_time, "NULL", equipment, file_name),
         )
         get_db().commit()
         return '{"redirect_to": "success"}'
     else:
         return render_template("index.jinja")
+
+
+@app.route("/signin.jinja", methods=["GET", "POST"])
+def signin():
+    if request.method == "POST":
+        # TODO: Find the entry of the sign out, add time of sign in
+        return '{"redirect_to": "success"}'
+    return render_template("signin.jinja")
 
 
 @app.route("/main.js", methods=["GET"])
@@ -61,6 +71,15 @@ def js_serve():
         return file.read()
 
 
+@app.route("/style.css", methods=["GET"])
+def css_serve():
+    with open("templates/style.css") as file:
+        return file.read()
+
+
 @app.route("/success", methods=["GET", "POST"])
 def success():
     return render_template("success.jinja")
+
+
+# TODO: Create and serve a favicon.ico, they're neat
