@@ -60,6 +60,7 @@ def index():
 @app.route("/signin", methods=["GET", "POST"])
 def signin():
     if request.method == "POST":
+        assert request.json is not None
         name = request.json["name"].lower().replace(" ", "_")
         equipment = request.json["equipment"]
         date = datetime.date.today().strftime("%Y-%m-%d")
@@ -73,8 +74,8 @@ def signin():
             (current_time, name, date, equipment),
         )
         # TODO: Find the entry of the sign out, add time of sign in
-        return '{"redirect_to": "success"}'
         get_db().commit()
+        return '{"redirect_to": "success"}'
     else:
         return render_template("signin.jinja")
 
@@ -82,6 +83,12 @@ def signin():
 @app.route("/main.js", methods=["GET"])
 def js_serve():
     with open("templates/main.js") as file:
+        return file.read()
+
+
+@app.route("/signin.js", methods=["GET"])
+def serve_js():
+    with open("templates/signin.js") as file:
         return file.read()
 
 

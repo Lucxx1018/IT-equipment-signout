@@ -1,15 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     let formName = document.getElementById("name");
     let formEquipment = document.getElementById("equipment-select");
-    let signatureCanvas = document.getElementById("signatureCanvas");
-    const signaturePad = new SignaturePad(signatureCanvas);
-    signaturePad.clear();
     let signatureButton = document.getElementById("signatureButton");
 
     signatureButton.addEventListener('click', async (event) => {
-            let dataUri = signaturePad.toDataURL("image/svg+xml");
-            let signatureData = JSON.stringify(dataUri);
-            let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value, signature: signatureData });
+            let payload = JSON.stringify({ name: formName.value, equipment: formEquipment.value });
         try {
             response = await fetch('/', {
                 method: 'POST',
