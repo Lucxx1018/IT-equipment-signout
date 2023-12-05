@@ -37,21 +37,21 @@ def index():
         response = base64.b64decode(response_encoded)
         name = request.json["name"]
         name = name.lower().replace(" ", "_")  # This makes John Doe -> john_doe
-        file_name = name + ".svg"
-        if Path("signatures").exists() is not True:
+        try:
             Path("signatures").mkdir()
-        with open(f"signatures/{file_name}", "wb") as file:
-            file.write(response)
+        except FileExistsError:
+            pass
 
         cursor = get_db().cursor()
-        date = datetime.date.today().strftime("%Y-%m-%d")
-        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         equipment = request.json["equipment"]
         cursor.execute(
-            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5, $6)",
-            (name, date, current_time, "NULL", equipment, file_name),
+            "INSERT INTO equipment_log VALUES($1, $2, $3, $4)",
+            (name, time, "NULL", equipment),
         )
         get_db().commit()
+        with open(f"signatures/{name}-{time.replace(':', '-')}.svg", "wb") as file:
+            file.write(response)
         return '{"redirect_to": "success"}'
     else:
         return render_template("index.jinja")
@@ -63,17 +63,15 @@ def signin():
         assert request.json is not None
         name = request.json["name"].lower().replace(" ", "_")
         equipment = request.json["equipment"]
-        date = datetime.date.today().strftime("%Y-%m-%d")
-        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+        time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor = get_db().cursor()
         cursor.execute(
             """
             UPDATE equipment_log
             SET TimeOut = $1
-            WHERE Name = $2 AND Date = $3 AND Equipment = $4""",
-            (current_time, name, date, equipment),
+            WHERE Name = $2 AND Equipment = $3""",
+            (time, name, equipment),
         )
-        # TODO: Find the entry of the sign out, add time of sign in
         get_db().commit()
         return '{"redirect_to": "success"}'
     else:
