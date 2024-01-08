@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS equipment_log(
     Name TEXT,
-    TimeIn TIME,
+    Equipment TEXT,
+    Returned BIT,
     TimeOut TIME,
-    Equipment TEXT
+    TimeIn TIME
 )

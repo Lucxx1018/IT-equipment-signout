@@ -46,11 +46,13 @@ def index():
         time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         equipment = request.json["equipment"]
         cursor.execute(
-            "INSERT INTO equipment_log VALUES($1, $2, $3, $4)",
-            (name, time, "NULL", equipment),
+            "INSERT INTO equipment_log VALUES($1, $2, $3, $4, $5)",
+            (name, equipment, 0, time, time),
         )
         get_db().commit()
-        with open(f"signatures/{name}-{time.replace(':', '-')}.svg", "wb") as file:
+        with open(
+            f"signatures/{name}-{time.replace(':', '-')}.svg", "wb"
+        ) as file:  # This comes out as john_doe-1999-12-31 11-59-59
             file.write(response)
         return '{"redirect_to": "success"}'
     else:
@@ -68,9 +70,9 @@ def signin():
         cursor.execute(
             """
             UPDATE equipment_log
-            SET TimeOut = $1
-            WHERE Name = $2 AND Equipment = $3""",
-            (time, name, equipment),
+            SET Returned = $1, TimeIn = $2
+            WHERE Name = $3 AND Equipment = $4""",
+            (1, time, name, equipment),
         )
         get_db().commit()
         return '{"redirect_to": "success"}'
