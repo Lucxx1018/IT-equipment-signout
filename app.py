@@ -77,6 +77,7 @@ def signin():
         get_db().commit()
         return '{"redirect_to": "success"}'
     else:
+        # TODO: Let users choose their name from a dropdown of currently unresolved signouts
         return render_template("signin.jinja")
 
 
