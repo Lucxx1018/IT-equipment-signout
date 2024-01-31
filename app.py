@@ -60,13 +60,13 @@ def index():
 
 
 @app.route("/signin", methods=["GET", "POST"])
-def signin():
+def signin(names):
+    cursor = get_db().cursor()
     if request.method == "POST":
         assert request.json is not None
         name = request.json["name"].lower().replace(" ", "_")
         equipment = request.json["equipment"]
         time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        cursor = get_db().cursor()
         cursor.execute(
             """
             UPDATE equipment_log
@@ -78,7 +78,10 @@ def signin():
         return '{"redirect_to": "success"}'
     else:
         # TODO: Let users choose their name from a dropdown of currently unresolved signouts
-        return render_template("signin.jinja")
+        cursor.execute("""SELECT Name FROM equipment_log WHERE Returned = 0""")
+        names = cursor.fetchall()[0][0]
+        print(names)
+        return render_template("signin.jinja", names=names)
 
 
 @app.route("/main.js", methods=["GET"])
