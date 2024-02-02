@@ -14,7 +14,11 @@
     <div class="flex">
         <div class="flex_column">
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+            <select name="name" id="name">
+                {% for name in names %}
+                    <option value="{{ name }}">{{ name }}</option>
+                {%endfor%}
+            </select>
         </div>
         <div class="flex_column">
             <label for="equipment-select">Equipment to sign in:</label>

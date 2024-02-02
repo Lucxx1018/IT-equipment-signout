@@ -59,8 +59,12 @@ def index():
         return render_template("index.jinja")
 
 
+def name_to_title(db_name: str) -> str:
+    return db_name.replace("_", " ").title()
+
+
 @app.route("/signin", methods=["GET", "POST"])
-def signin(names):
+def signin():
     cursor = get_db().cursor()
     if request.method == "POST":
         assert request.json is not None
@@ -77,22 +81,14 @@ def signin(names):
         get_db().commit()
         return '{"redirect_to": "success"}'
     else:
-        # TODO: Let users choose their name from a dropdown of currently unresolved signouts
         cursor.execute("""SELECT Name FROM equipment_log WHERE Returned = 0""")
-        names = cursor.fetchall()[0][0]
-        print(names)
+        names = [name_to_title(name[0]) for name in cursor.fetchall()]
         return render_template("signin.jinja", names=names)
 
 
 @app.route("/main.js", methods=["GET"])
 def js_serve():
     with open("templates/main.js") as file:
-        return file.read()
-
-
-@app.route("/signin.js", methods=["GET"])
-def serve_js():
-    with open("templates/signin.js") as file:
         return file.read()
 
 
@@ -105,6 +101,3 @@ def css_serve():
 @app.route("/success", methods=["GET", "POST"])
 def success():
     return render_template("success.jinja")
-
-
-# TODO: Create and serve a favicon.ico, they're neat
